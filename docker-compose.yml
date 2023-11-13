@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: "postgres://db:5432/Blog_app"
+      REDIS_URL: "redis://redis:6379/0"
+    command: ["rails", "server", "-b", "0.0.0.0"]
+
+  # PostgreSQL database
+  db:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_USER: abdo
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: Blog_app
+
+  # Redis for Sidekiq
+  redis:
+    image: "redis:latest"
+
+  # Sidekiq for background jobs
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: "postgres://db:5432/myapp_development"
+      REDIS_URL: "redis://redis:6379/0"
+    command: ["sidekiq"]
+
