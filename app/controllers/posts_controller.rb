@@ -70,11 +70,4 @@ class PostsController < ApplicationController
                 )
         end
     
-    def tag_for_another_user_present?
-        # Logic to check if tags for other users are present in the request
-        # Implement your custom logic here
-        # Return true if tags for other users are present, false otherwise
-        # Example: params[:other_user_tags].present?
-    end
-
 end
