@@ -2,24 +2,30 @@ class UsersController < ApplicationController
 
     skip_before_action :verify_authenticity_token
     def register
-        @user = User.create(user_params)
-        if @user.save
-            response = { message: 'Created is done' }
-            render json: response, status: :created
+        existing_user = User.find_by(email: params[:email])
+
+        if existing_user
+            render json: { error: 'User with this email already exists' }, status: :conflict
         else
-            render json: @user.errors, status: :bad_request
+            @user = User.create(user_params)
+            if @user.save
+                response = { message: 'Registration is done' }
+                render json: response, status: :created
+            else
+                render json: @user.errors, status: :bad_request
+            end
         end
     end
     
     private
 
     def user_params
-    params.permit(
-        :name,
-        :email,
-        :password,
-        :image
-    )
+        params.permit(
+            :name,
+            :email,
+            :password,
+            :image
+        )
     end
 
     def login

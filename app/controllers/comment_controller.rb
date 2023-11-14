@@ -1,18 +1,16 @@
 class CommentController < ApplicationController
-    before_action :set_comment, only: [:edit, :update, :destroy]
+    before_action :set_comment, only: [:update, :destroy]
 
     def create
         @comment = Comment.new(comment_params)
-        @comment.user = current_user # Assuming you have user authentication
+        @comment.user = current_user 
         if @comment.save
             render json: @comment, status: :created
         else
             render json: @comment.errors, status: :unprocessable_entity
         end
     end
-    def edit
-        authorize_comment
-    end
+    
     def update
         authorize_comment
         if @comment.update(comment_params)

@@ -19,7 +19,7 @@ class Post < ApplicationRecord
   private
 
   def schedule_cleanup
-    PostCleanupWorker.perform_in(24.hours, id)
+    PostDeletionJob.perform(id)
   end
 
 end
